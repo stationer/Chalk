@@ -1,0 +1,47 @@
+
+<style>
+    textarea {
+        background: #000 !important;
+        color: #eec !important;
+    }
+</style>
+
+<h1>Chalk Demo</h1>
+<h2>Demo 1: &lt;textarea></h2>
+<textarea name="demo1" id="demo1" class="wysiwyg" style="height:500px; width:1000px;">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        a img {
+            border: 0;
+        }
+
+        .u {
+            text-decoration: underline;
+        }
+    </style>
+    <script type="text/javascript">
+    </script>
+</head>
+<body>
+    <p><b>HTML</b> <i>typed in the black box</i> <span class="u">renders in the white box</span>.</p>
+    <p>
+        <a href="http://validator.w3.org/check?uri=referer"><img
+            src="http://www.w3.org/Icons/valid-html401"
+            alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
+    </p>
+</body>
+</html>
+</textarea>
+
+<h2>Demo 2: &lt;div></h2>
+<div id="demo2" class="wysiwyg" style="height:500px; width:1000px;"><h4>ANother TesT!!!!1</h4></div>
+
+<script type="text/javascript" src="chalk.js"></script>
+<script>
+    // Attach Quilljs to elements of choice
+    new Chalk().buildByQuery('.wysiwyg');
+</script>

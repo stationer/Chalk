@@ -1,0 +1,24 @@
+{
+  "name": "ok-chalk",
+  "version": "1.0.0",
+  "description": "Chalk Quick Editor: A glorified textarea wysiwyg",
+  "main": "src/chalk.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stationer/Chalk.git"
+  },
+  "keywords": [
+    "textarea",
+    "wysiwyg",
+    "contenteditable"
+  ],
+  "author": "Tyler Uebele",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stationer/Chalk/issues"
+  },
+  "homepage": "https://github.com/stationer/Chalk#readme"
+}
