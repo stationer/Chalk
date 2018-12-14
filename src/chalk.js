@@ -1,4 +1,15 @@
+/**
+ * Chalk is a glorified textarea
+ * Creates a side-by-side textarea-contenteditable-iframe for quick views of code edits
+ */
 class Chalk {
+    /**
+     * Accept some options to override defaults
+     *  tab - the tab string to be inserted when pressing the tab key
+     *  styles - an array of css rules
+     *  
+     * @param options
+     */
     constructor(options = {}) {
         this.tab = options.tab || '    ';
         this.styles = options.styles || Chalk.getDefaultStylesheet();
@@ -8,10 +19,21 @@ class Chalk {
         }
     }
 
+    /**
+     * Accepts a query selector and applies chalk to each found element
+     * 
+     * @param selector
+     */
     buildByQuery(selector) {
         document.querySelectorAll(selector).forEach(this.build, this);
     }
 
+    /**
+     * Given an element, delegate to the appropriate builder based on its type
+     * 
+     * @param element
+     * @returns {*}
+     */
     build(element) {
         switch (element.nodeName) {
             case 'TEXTAREA':
@@ -25,6 +47,12 @@ class Chalk {
         }
     }
 
+    /**
+     * Get initial value from supplied textarea and create other elements
+     * Then delegate to assemble()
+     * 
+     * @param element
+     */
     buildOnTextarea(element) {
         let textarea = element;
         let div = document.createElement('div');
@@ -47,6 +75,12 @@ class Chalk {
         }
     }
 
+    /**
+     * Get initial value from supplied div and create other elements
+     * Then delegate to assemble()
+     *
+     * @param element
+     */
     buildOnDiv(element) {
         let textarea = document.createElement('textarea');
         let div = element;
@@ -59,9 +93,24 @@ class Chalk {
         this.assemble(textarea, div, iframe, content);
     }
 
+    /**
+     * Get initial value from supplied iframe and create other elements
+     * Then delegate to assemble()
+     *
+     * @param element
+     */
     buildOnIFrame(element) {
     }
 
+    /**
+     * Given the key elements and inital value, assemble them in the DOM 
+     * and attach event handlers
+     * 
+     * @param textarea
+     * @param div
+     * @param iframe
+     * @param content
+     */
     assemble(textarea, div, iframe, content) {
         this.textarea = textarea;
         this.iframe = iframe;
@@ -87,18 +136,37 @@ class Chalk {
 
         iframe.contentWindow.document.addEventListener('keyup', this.iframeKeyUpHandler.bind(this))
     }
-    
+
+    /**
+     * Event handler for changes in the iframe
+     * Updates the textarea value
+     * 
+     * @param event
+     */
     iframeKeyUpHandler(event) {
-        this.textarea.value = this.iframe.contentWindow.document.body.parentNode.outerHTML;
+        // TODO: Should this be an option?
+        // this.textarea.value = this.iframe.contentWindow.document.body.parentNode.outerHTML;
         this.textarea.value = this.iframe.contentWindow.document.body.innerHTML;
     }
 
+    /**
+     * Event handler for changes in the textarea
+     * 
+     * @param event
+     */
     textareaKeyUpHandler(event) {
         this.iframe.contentWindow.document.open();
         this.iframe.contentWindow.document.write(this.textarea.value);
         this.iframe.contentWindow.document.close();
     }
 
+    /**
+     * Event handler for capturing tabs and newlines in the textarea
+     * Adds support for autoindent and multiline tabbing
+     * 
+     * @param event
+     * @returns {boolean}
+     */
     textareaKeyDownHandler(event) {
         let textarea = event.target;
         let start = textarea.selectionStart;
@@ -172,6 +240,13 @@ class Chalk {
 
     }
 
+    /**
+     * Builds a toolbar
+     * Sets tools to support feather icons, but have default text labels
+     * 
+     * @param iframe
+     * @returns {HTMLElement}
+     */
     getToolbar(iframe) {
         let toolbar, tool, tools, inner, handler;
         toolbar = document.createElement('div');
