@@ -63,12 +63,16 @@ class Chalk {
     }
 
     assemble(textarea, div, iframe, content) {
+        this.textarea = textarea;
+        this.iframe = iframe;
+        this.rootDiv = div;
+        
         textarea.classList.add('chalk-source');
         div.classList.add('chalk-root');
         iframe.classList.add('chalk-frame');
 
         div.innerHTML = '';
-        div.appendChild(this.getToolbar());
+        div.appendChild(this.getToolbar(iframe));
         div.appendChild(textarea);
         div.appendChild(iframe);
 
@@ -78,17 +82,21 @@ class Chalk {
         iframe.contentWindow.document.close();
         iframe.contentWindow.document.designMode = 'on';
 
-        textarea.addEventListener('keyup', function() {
-            iframe.contentWindow.document.open();
-            iframe.contentWindow.document.write(textarea.value);
-            iframe.contentWindow.document.close();
-        });
+        textarea.addEventListener('keyup', this.textareaKeyUpHandler.bind(this));
         textarea.addEventListener('keydown', this.textareaKeyDownHandler.bind(this));
 
-        iframe.contentWindow.document.addEventListener('keyup', function() {
-            textarea.value = iframe.contentWindow.document.body.parentNode.outerHTML;
-            textarea.value = iframe.contentWindow.document.body.innerHTML;
-        })
+        iframe.contentWindow.document.addEventListener('keyup', this.iframeKeyUpHandler.bind(this))
+    }
+    
+    iframeKeyUpHandler(event) {
+        this.textarea.value = this.iframe.contentWindow.document.body.parentNode.outerHTML;
+        this.textarea.value = this.iframe.contentWindow.document.body.innerHTML;
+    }
+
+    textareaKeyUpHandler(event) {
+        this.iframe.contentWindow.document.open();
+        this.iframe.contentWindow.document.write(this.textarea.value);
+        this.iframe.contentWindow.document.close();
     }
 
     textareaKeyDownHandler(event) {
@@ -164,8 +172,8 @@ class Chalk {
 
     }
 
-    getToolbar() {
-        let toolbar, tool, tools, inner;
+    getToolbar(iframe) {
+        let toolbar, tool, tools, inner, handler;
         toolbar = document.createElement('div');
         toolbar.classList.add('chalk-toolbar');
 
@@ -176,6 +184,33 @@ class Chalk {
             ['text-right', 'arrow-right'],
             ['text-hide', 'edit']
         ];
+        handler = function(newClass, tools) {
+            return function(event) {
+                for (let j = 0; j < tools.length; j++) {
+                    toolbar.parentElement.classList.remove('chalk-' + tools[j][0]);
+                }
+                toolbar.parentElement.classList.add(newClass);
+                event.preventDefault();
+            }
+        };
+        for (let i = 0; i < tools.length; i++) {
+            tool = document.createElement('span');
+            tool.classList.add('tool-'+tools[i][0]);
+            inner = document.createElement('span');
+            inner.innerText = tools[i][0];
+            inner.setAttribute('data-feather', tools[i][1]);
+            tool.appendChild(inner);
+            
+            tool.addEventListener('click', handler('chalk-' + tools[i][0], tools));
+            toolbar.appendChild(tool);
+        }
+        
+        tools = [
+            ['bold', 'bold'],
+            ['italic', 'italic'],
+            ['underline', 'underline'],
+            ['strikeThrough', 'minus'],
+        ];
         for (let i = 0; i < tools.length; i++) {
             tool = document.createElement('span');
             inner = document.createElement('span');
@@ -183,12 +218,10 @@ class Chalk {
             inner.setAttribute('data-feather', tools[i][1]);
             tool.appendChild(inner);
             tool.addEventListener('click', function(event) {
-                for (let j = 0; j < tools.length; j++) {
-                    toolbar.parentElement.classList.remove('chalk-' + tools[j][0]);
-                }
-                toolbar.parentElement.classList.add('chalk-' + tools[i][0]);
+                this.iframe.contentWindow.document.execCommand(tools[i][0]);
+                this.iframeKeyUpHandler();
                 event.preventDefault();
-            });
+            }.bind(this));
             toolbar.appendChild(tool);
         }
 
@@ -254,7 +287,10 @@ class Chalk {
     display: none;
 }`,
             `div.chalk-toolbar > span {
-    margin: 2px 10px;
+    margin: 1px 5px;
+}`,
+            `div.chalk-toolbar > span[class|="tool-text"] {
+    float: right;
 }`,
 
             `div.chalk-toolbar {
