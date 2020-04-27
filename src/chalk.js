@@ -7,7 +7,7 @@ class Chalk {
      * Accept some options to override defaults
      *  tab - the tab string to be inserted when pressing the tab key
      *  styles - an array of css rules
-     *  
+     *
      * @param options
      */
     constructor(options = {}) {
@@ -21,7 +21,7 @@ class Chalk {
 
     /**
      * Accepts a query selector and applies chalk to each found element
-     * 
+     *
      * @param selector
      */
     buildByQuery(selector) {
@@ -30,7 +30,7 @@ class Chalk {
 
     /**
      * Given an element, delegate to the appropriate builder based on its type
-     * 
+     *
      * @param element
      * @returns {*}
      */
@@ -50,7 +50,7 @@ class Chalk {
     /**
      * Get initial value from supplied textarea and create other elements
      * Then delegate to assemble()
-     * 
+     *
      * @param element
      */
     buildOnTextarea(element) {
@@ -103,9 +103,9 @@ class Chalk {
     }
 
     /**
-     * Given the key elements and inital value, assemble them in the DOM 
+     * Given the key elements and inital value, assemble them in the DOM
      * and attach event handlers
-     * 
+     *
      * @param textarea
      * @param div
      * @param iframe
@@ -115,7 +115,7 @@ class Chalk {
         this.textarea = textarea;
         this.iframe = iframe;
         this.rootDiv = div;
-        
+
         textarea.classList.add('chalk-source');
         div.classList.add('chalk-root');
         iframe.classList.add('chalk-frame');
@@ -140,7 +140,7 @@ class Chalk {
     /**
      * Event handler for changes in the iframe
      * Updates the textarea value
-     * 
+     *
      * @param event
      */
     iframeKeyUpHandler(event) {
@@ -151,7 +151,7 @@ class Chalk {
 
     /**
      * Event handler for changes in the textarea
-     * 
+     *
      * @param event
      */
     textareaKeyUpHandler(event) {
@@ -163,7 +163,7 @@ class Chalk {
     /**
      * Event handler for capturing tabs and newlines in the textarea
      * Adds support for autoindent and multiline tabbing
-     * 
+     *
      * @param event
      * @returns {boolean}
      */
@@ -243,7 +243,7 @@ class Chalk {
     /**
      * Builds a toolbar
      * Sets tools to support feather icons, but have default text labels
-     * 
+     *
      * @param iframe
      * @returns {HTMLElement}
      */
@@ -253,7 +253,7 @@ class Chalk {
         toolbar.classList.add('chalk-toolbar');
 
         tools = [
-            ['text-only', 'code'], 
+            ['text-only', 'code'],
             ['text-left', 'arrow-left'],
             ['text-top', 'arrow-up'],
             ['text-right', 'arrow-right'],
@@ -270,16 +270,16 @@ class Chalk {
         };
         for (let i = 0; i < tools.length; i++) {
             tool = document.createElement('span');
-            tool.classList.add('tool-'+tools[i][0]);
+            tool.classList.add('tool-' + tools[i][0]);
             inner = document.createElement('span');
             inner.innerText = tools[i][0];
             inner.setAttribute('data-feather', tools[i][1]);
             tool.appendChild(inner);
-            
+
             tool.addEventListener('click', handler('chalk-' + tools[i][0], tools));
             toolbar.appendChild(tool);
         }
-        
+
         tools = [
             ['bold', 'bold'],
             ['italic', 'italic'],
@@ -321,7 +321,7 @@ class Chalk {
     }
 
     /**
-     * Returns an array of CSS Rules suitable for Quill
+     * Returns an array of CSS Rules suitable for Chalk
      *
      * @returns {string[]}
      */
