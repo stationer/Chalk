@@ -1,6 +1,6 @@
 {
   "name": "ok-chalk",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Chalk Quick Editor: A glorified textarea wysiwyg",
   "main": "src/chalk.js",
   "scripts": {

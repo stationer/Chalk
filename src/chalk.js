@@ -300,7 +300,33 @@ class Chalk {
             toolbar.appendChild(tool);
         }
 
+        tool = document.createElement('span');
+        inner = document.createElement('span');
+        inner.innerText = 'unstyle-markup';
+        inner.setAttribute('data-feather', '');
+        tool.appendChild(inner);
+        tool.addEventListener('click', function(event) {
+            Chalk.unstyleMarkup(this.iframe.contentWindow.document.body);
+            this.iframe.contentWindow.document.body.innerHTML = this.iframe.contentWindow.document.body.innerHTML;
+            this.iframeKeyUpHandler();
+            event.preventDefault();
+        }.bind(this));
+        toolbar.appendChild(tool);
+
         return toolbar;
+    }
+
+    /**
+     * Removes all attributes from all nodes under supplied node
+     * @param Node
+     */
+    static unstyleMarkup(Node) {
+        let Nodes = Node.querySelectorAll('*');
+        Nodes.forEach(descendent => {
+            while (descendent.attributes.length > 0) {
+                descendent.removeAttribute(descendent.attributes[0].name);
+            }
+        })
     }
 
     /**
